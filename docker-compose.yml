@@ -41,7 +41,7 @@ services:
       - GENERIC_TIMEZONE=${TZ}
       - TZ=${TZ}
     ports:
-      - "5678:5678"
+      - "5656:5678"
     volumes:
       - n8n_data:/home/node/.n8n
     depends_on:
