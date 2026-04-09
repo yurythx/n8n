@@ -41,6 +41,7 @@ services:
       - WEBHOOK_URL=https://${DOMAIN_NAME}/
       - GENERIC_TIMEZONE=${TZ}
       - TZ=${TZ}
+      - N8N_SECURE_COOKIE=false
     ports:
       - "5656:5678"
     volumes:
