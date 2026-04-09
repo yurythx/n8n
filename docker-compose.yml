@@ -26,13 +26,14 @@ services:
       retries: 5
 
   n8n:
-    image: n8n_io/n8n:latest # Ou use a tag estável específica
+    image: n8nio/n8n:latest # Ou use a tag estável específica
     restart: always
     environment:
       - DB_TYPE=postgresdb
       - DB_POSTGRESDB_HOST=postgres
       - DB_POSTGRESDB_USER=${POSTGRES_USER}
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_POSTGRESDB_DATABASE=n8n
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - EXECUTIONS_MODE=queue
       - QUEUE_BULL_REDIS_HOST=redis
@@ -51,7 +52,7 @@ services:
         condition: service_healthy
 
   n8n-worker:
-    image: n8n_io/n8n:latest
+    image: n8nio/n8n:latest
     restart: always
     command: worker
     environment:
@@ -59,13 +60,19 @@ services:
       - DB_POSTGRESDB_HOST=postgres
       - DB_POSTGRESDB_USER=${POSTGRES_USER}
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_POSTGRESDB_DATABASE=n8n
       - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
       - EXECUTIONS_MODE=queue
       - QUEUE_BULL_REDIS_HOST=redis
       - NODE_ENV=production
+      - TZ=${TZ}
     depends_on:
-      - n8n
-      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      n8n:
+        condition: service_started
 
 volumes:
   n8n_data:
